@@ -4,7 +4,16 @@
 """
 import pytest
 import requests
-from helpers import get_courier_by_id, create_courier, delete_courier
+from api_client import CourierAPIClient
+
+
+@pytest.fixture
+def api_client():
+    """Клиент для работы с API курьеров."""
+    return CourierAPIClient(
+        base_url="http://127.0.0.1:5001/api",
+        auth_token="test_token_123",
+    )
 
 
 @pytest.fixture
@@ -18,27 +27,27 @@ def new_courier_data():
 
 
 @pytest.mark.usefixtures("fake_server")
-class TestCourierHelpers:
-    """Тесты для процедурных хелперов."""
+class TestCourierAPIClient:
+    """Тесты для класса CourierAPIClient."""
 
-    def test_get_courier_by_id(self):
+    def test_get_courier_by_id(self, api_client):
         """Получение курьера с id=1 (зашит в fake_api)."""
-        courier = get_courier_by_id(1)
+        courier = api_client.get_courier_by_id(1)
         assert courier["id"] == 1
         assert courier["first_name"] == "Иван"
 
-    def test_create_courier(self, new_courier_data):
+    def test_create_courier(self, api_client, new_courier_data):
         """Создание нового курьера."""
-        result = create_courier(new_courier_data)
+        result = api_client.create_courier(new_courier_data)
         assert "id" in result
         assert result["first_name"] == "Мария"
 
-    def test_get_nonexistent_courier_raises(self):
+    def test_get_nonexistent_courier_raises(self, api_client):
         """Запрос несуществующего курьера вызывает ошибку 404."""
         with pytest.raises(requests.exceptions.HTTPError):
-            get_courier_by_id(99999)
+            api_client.get_courier_by_id(99999)
 
-    def test_delete_courier(self):
+    def test_delete_courier(self, api_client):
         """Удаление курьера с id=2 (зашит в fake_api)."""
-        result = delete_courier(2)
+        result = api_client.delete_courier(2)
         assert result == {"status": "deleted"}
