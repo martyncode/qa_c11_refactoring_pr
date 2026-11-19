@@ -14,20 +14,20 @@ import requests
 
 
 class CourierAPIClient:
-    """Клиент для работы с API курьеров."""
+    
 
     def __init__(self, base_url: str, auth_token: str):
         self.base_url = base_url
         self.auth_token = auth_token
 
     def _get_auth_header(self) -> dict:
-        """Возвращает заголовок авторизации."""
+       
         if not self.auth_token:
             raise ValueError("auth_token не задан")
         return {"Authorization": f"Bearer {self.auth_token}"}
 
     def get_courier_by_id(self, courier_id: int) -> dict:
-        """Получает данные курьера по ID."""
+       
         url = f"{self.base_url}/couriers/{courier_id}"
         headers = self._get_auth_header()
         response = requests.get(url, headers=headers)
@@ -35,7 +35,7 @@ class CourierAPIClient:
         return response.json()
 
     def create_courier(self, data: dict) -> dict:
-        """Создаёт нового курьера."""
+        
         url = f"{self.base_url}/couriers"
         headers = self._get_auth_header()
         headers["Content-Type"] = "application/json"
@@ -44,7 +44,7 @@ class CourierAPIClient:
         return response.json()
 
     def delete_courier(self, courier_id: int) -> dict:
-        """Удаляет курьера по ID."""
+        
         url = f"{self.base_url}/couriers/{courier_id}"
         headers = self._get_auth_header()
         response = requests.delete(url, headers=headers)
