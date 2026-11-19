@@ -19,6 +19,8 @@ def _get_auth_header():
     return {"Authorization": f"Bearer {AUTH_TOKEN}"}
 
 
+
+
 def get_courier_by_id(courier_id):
     """Получает данные курьера по ID."""
     url = f"{BASE_URL}/couriers/{courier_id}"
